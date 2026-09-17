@@ -14,7 +14,12 @@ I made a DIY controller to operate my SunRain shade, based on the open-source ES
 See for the code, wiring guides, and instructions on the official [ESPSomfy-RTS project page](https://github.com/rstrouse/ESPSomfy-RTS).
 and an instruction video on [youtube](https://www.youtube.com/watch?v=1acVJ0xWJgs)
 
+### CC1101 433MHz RF transceiver
+
 <img width="50%" alt="image" src="https://github.com/user-attachments/assets/90fb8032-c2f1-48a3-870c-ac696d3649e5" />
+
+
+<img width="50%" alt="image" src="https://github.com/user-attachments/assets/d73b86e1-9320-4c61-8300-7564bcdc1605" />
 
 My version of the CC1101-based module (E07-M1101D-SMA) exposes only a single GDO line (or internally tie functions together), while ESPSomfy is often configured expecting separate RX and TX signal pins. 
 
@@ -23,6 +28,7 @@ The GPIO configuration with a ESP32 S3 Xiao Seeed Studio is as follows;
 - RX Pin = GPIO3
 - TX Pin = GPIO3 <-- same GPIO as RX
 
+### ESP32 S3 Xiao Seeed Studio
 pin connection of the ESP32 S3 Xiao Seeed Studio;
 
 <img width="30%" alt="image" src="https://github.com/user-attachments/assets/a6c90227-256f-481b-9778-97537742e0fe" />
@@ -38,6 +44,6 @@ pin connection of the ESP32 S3 Xiao Seeed Studio;
 | 7   | MISO                         | GPIO 08    | 10      |
 | 8   | Not connected                |            |         |
 
-Screenshot of my ESPSomfyRTS Radio setting;
+Here a screenshot of my ESPSomfyRTS Radio setting;
 
 <img width="40%" alt="image" src="https://github.com/user-attachments/assets/dd554f1b-836c-40dd-8811-f60dbd8e4370" />
