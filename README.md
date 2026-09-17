@@ -62,6 +62,13 @@ I made a small PCB for it
 
 <img width="50%" alt="image" src="https://github.com/user-attachments/assets/2bb88ea2-abb1-45a3-ba3d-a320ddaaafa4" />
 
+Before ordering I panellized the PCB design so I have enough PCB o experiment or sell (or give away ;-) )
+
+<img width="30%" alt="image" src="https://github.com/user-attachments/assets/734ece6a-5fff-45d9-905d-ea23c84c6f4f" />
+
+
+
+
 ## Enclosure
 At last i "boxified" an [enclosure](https://cad.onshape.com/documents/2429cd535c2c818681c446f4/w/762b6c313c33766c159c34b3/e/4a0a0d23bcb24ef244694428) for it (see also my [Boxify Instructable](https://www.instructables.com/-Boxify-a-Parametric-Electronics-Enclosure-Framewo))
 
