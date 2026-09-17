@@ -62,4 +62,20 @@ I made a small PCB for it
 
 <img width="50%" alt="image" src="https://github.com/user-attachments/assets/2bb88ea2-abb1-45a3-ba3d-a320ddaaafa4" />
 
-And "boxified" an [enclosure](https://cad.onshape.com/documents/2429cd535c2c818681c446f4/w/762b6c313c33766c159c34b3/e/4a0a0d23bcb24ef244694428) for it (see also my [Boxify Instructable](https://www.instructables.com/-Boxify-a-Parametric-Electronics-Enclosure-Framewo))
+## Enclosure
+At last i "boxified" an [enclosure](https://cad.onshape.com/documents/2429cd535c2c818681c446f4/w/762b6c313c33766c159c34b3/e/4a0a0d23bcb24ef244694428) for it (see also my [Boxify Instructable](https://www.instructables.com/-Boxify-a-Parametric-Electronics-Enclosure-Framewo))
+
+and 3D printed it
+
+<img width="50%" alt="image" src="https://github.com/user-attachments/assets/83b7fad3-78b1-4a7a-a076-bfe6fb64d51a" />
+
+<img width="30%" alt="image" src="https://github.com/user-attachments/assets/b7a6c785-e766-40a5-a1b2-e2797452935d" />
+
+## Controlling the SunRain shade
+
+Because the Somfy motor has no motor running sensor I derived this from a HomeWizard plug - the motor uses ca 200W so it is possible to tell whether the engine is running or not. 
+
+For controlling the shade I made a dashboard in nodeRed where I can see if the motor is responding and where I will be warned when there is rain predicted within 30 minutes
+
+
+<img width="50%" alt="image" src="https://github.com/user-attachments/assets/02ed844e-f5a5-471e-83d8-f6b92894fac3" />
