@@ -1,0 +1,1232 @@
+[
+    {
+        "id": "7f2a4d9b3c8e1001",
+        "type": "subflow",
+        "name": "Message Gate",
+        "info": "# 🚦 Message Gate Subflow\r\n\r\n## 🧠 Function\r\n\r\nThis subflow provides a reusable persistent **pass/block message gate**.\r\n\r\nIt can be used to enable or disable message flow using:\r\n\r\n* Dashboard switch\r\n* Inject node\r\n* MQTT command\r\n* Function node\r\n* Any flow that sends a boolean control message\r\n\r\nThe gate stores its state persistently and decides whether incoming messages are passed or silently blocked.\r\n\r\n---\r\n\r\n## 📥 Input\r\n\r\nThe subflow has **one input**.\r\n\r\nIncoming messages are interpreted in two ways:\r\n\r\n---\r\n\r\n## 🎛 Control Messages\r\n\r\nThe gate can be enabled or disabled using:\r\n\r\n```javascript\r\nmsg.enable = true;\r\n```\r\n\r\nor:\r\n\r\n```javascript\r\nmsg.enable = false;\r\n```\r\n\r\nAlternative dashboard/MQTT-friendly format:\r\n\r\n```javascript\r\nmsg.topic = \"enable\";\r\nmsg.payload = true;\r\n```\r\n\r\nor:\r\n\r\n```javascript\r\nmsg.topic = \"enable\";\r\nmsg.payload = false;\r\n```\r\n\r\n### Meaning\r\n\r\n| Message                                        | Function     |\r\n| ---------------------------------------------- | ------------ |\r\n| `msg.enable = true`                            | Enable gate  |\r\n| `msg.enable = false`                           | Disable gate |\r\n| `msg.topic = \"enable\"` + `msg.payload = true`  | Enable gate  |\r\n| `msg.topic = \"enable\"` + `msg.payload = false` | Disable gate |\r\n\r\nControl messages are **not passed through Output 1**.\r\n\r\n---\r\n\r\n## 📩 Normal Messages\r\n\r\nAny message that is **not** a control message is treated as a normal message.\r\n\r\nIf the gate is enabled:\r\n\r\n```text\r\nmessage passes\r\n```\r\n\r\nIf the gate is disabled:\r\n\r\n```text\r\nmessage is blocked\r\n```\r\n\r\nThe original message is passed unchanged.\r\n\r\n---\r\n\r\n## 📤 Outputs\r\n\r\n### Output 1 — Passed Messages\r\n\r\nOnly messages that pass the gate.\r\n\r\n```javascript\r\nmsg // original message, unchanged\r\n```\r\n\r\nIf the gate is disabled, no message is sent.\r\n\r\n---\r\n\r\n### Output 2 — Gate State\r\n\r\nEmits only when the gate state changes.\r\n\r\n```javascript\r\nmsg.payload = true | false\r\nmsg.topic = stateName\r\n```\r\n\r\nAdditional metadata:\r\n\r\n```javascript\r\nmsg.gate = {\r\n    name: stateName,\r\n    label: label,\r\n    enabled: true | false\r\n};\r\n```\r\n\r\n---\r\n\r\n## ⚙️ Environment Variables\r\n\r\n### stateName\r\n\r\nName of the persistent flow variable.\r\n\r\nExample:\r\n\r\n```text\r\nnotificationGate\r\n```\r\n\r\nStored as:\r\n\r\n```javascript\r\nflow.get(stateName, \"file\")\r\nflow.set(stateName, value, \"file\")\r\n```\r\n\r\n---\r\n\r\n### default\r\n\r\nInitial state when the persistent variable does not yet exist.\r\n\r\nDefault:\r\n\r\n```text\r\ntrue\r\n```\r\n\r\n---\r\n\r\n### label\r\n\r\nHuman-readable label used in metadata.\r\n\r\nExample:\r\n\r\n```text\r\nNotification Gate\r\n```\r\n\r\n---\r\n\r\n## 📌 Status Indicator\r\n\r\nThe subflow displays its current state on the Node-RED workspace.\r\n\r\n| Status     | Meaning              |\r\n| ---------- | -------------------- |\r\n| 🟢 ENABLED | Messages are passed  |\r\n| 🔴 BLOCKED | Messages are blocked |\r\n\r\n---\r\n\r\n## 🚀 Usage Example\r\n\r\n### Dashboard switch\r\n\r\nConfigure a `ui_switch` as:\r\n\r\n```text\r\ntopic: enable\r\non payload: true\r\noff payload: false\r\n```\r\n\r\nWire it directly into the Message Gate.\r\n\r\n---\r\n\r\n### Notification example\r\n\r\n```text\r\nRain Alert\r\n    │\r\n    ▼\r\nMessage Gate\r\n    │\r\n    ▼\r\nHA+WA Notification\r\n```\r\n\r\nWhen the gate is enabled, alerts are sent.\r\n\r\nWhen the gate is disabled, alerts are suppressed.\r\n\r\n---\r\n\r\n## 🧩 Design Goals\r\n\r\n* One input, suitable for Node-RED subflows\r\n* Minimal wiring\r\n* Persistent enable/disable state\r\n* Dashboard-friendly control\r\n* Original messages pass unchanged\r\n* Blocked messages are silently discarded\r\n* State changes are available on Output 2\r\n* Easy to reuse across many flows\r\n\r\n---\r\n\r\n## Typical Applications\r\n\r\n* Enable/disable notifications\r\n* Maintenance mode gate\r\n* Alarm message filter\r\n* Doorbell mute\r\n* Rain alert mute\r\n* Debug/test mode switch\r\n* Temporarily block MQTT messages\r\n* Disable non-critical automations\r\n\r\n---\r\n\r\n## Design Notes\r\n\r\n* The subflow deliberately does **not** output blocked messages.\r\n* Output 2 is used for gate state feedback.\r\n* Control messages are consumed by the gate.\r\n* Normal messages are never modified.\r\n* State is stored persistently using **flow context (`file`)**.\r\n",
+        "category": "",
+        "in": [
+            {
+                "x": 120,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "7f2a4d9b3c8e1002"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 660,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "7f2a4d9b3c8e1002",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 660,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "7f2a4d9b3c8e1002",
+                        "port": 1
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "stateName",
+                "type": "str",
+                "value": "messageGate"
+            },
+            {
+                "name": "default",
+                "type": "bool",
+                "value": "true"
+            },
+            {
+                "name": "label",
+                "type": "str",
+                "value": "Message Gate"
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99",
+        "status": {
+            "x": 540,
+            "y": 200,
+            "wires": [
+                {
+                    "id": "7f2a4d9b3c8e1002",
+                    "port": 2
+                }
+            ]
+        }
+    },
+    {
+        "id": "7f2a4d9b3c8e1002",
+        "type": "function",
+        "z": "7f2a4d9b3c8e1001",
+        "name": "Message Gate Core",
+        "func": "const KEY = env.get(\"stateName\") || \"messageGate\";\nconst LABEL = env.get(\"label\") || KEY;\nconst DEFAULT = env.get(\"default\") === true || env.get(\"default\") === \"true\";\n\nfunction statusMsg(enabled) {\n    return {\n        payload: {\n            fill: enabled ? \"green\" : \"red\",\n            shape: \"dot\",\n            text: enabled ? \"ENABLED\" : \"BLOCKED\"\n        }\n    };\n}\n\nfunction stateMsg(enabled) {\n    return {\n        payload: enabled,\n        topic: KEY,\n        gate: {\n            name: KEY,\n            label: LABEL,\n            enabled: enabled\n        }\n    };\n}\n\nlet enabled = flow.get(KEY, \"file\");\n\nif (typeof enabled !== \"boolean\") {\n    enabled = DEFAULT;\n    flow.set(KEY, enabled, \"file\");\n}\n\n// ----- Control message -----\nlet control;\n\nif (typeof msg.enable === \"boolean\") {\n    control = msg.enable;\n}\nelse if (msg.topic === \"enable\" && typeof msg.payload === \"boolean\") {\n    control = msg.payload;\n}\n\nif (typeof control === \"boolean\") {\n    const previous = enabled;\n    enabled = control;\n\n    if (previous !== enabled) {\n        flow.set(KEY, enabled, \"file\");\n        return [null, stateMsg(enabled), statusMsg(enabled)];\n    }\n\n    return [null, null, statusMsg(enabled)];\n}\n\n// ----- Normal message -----\nif (enabled) {\n    return [msg, null, statusMsg(enabled)];\n}\n\nreturn [null, null, statusMsg(enabled)];",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "2611c893a81b0e44",
+        "type": "subflow",
+        "name": "HA+WA Notification",
+        "info": "# 📡 HA + WhatsApp Notification Subflow\r\n\r\n## 🧠 Function\r\nThis subflow provides a unified notification system for:\r\n\r\n- Home Assistant Mobile App\r\n- WhatsApp (see [github](https://github.com/raulpetruta/ha-wa-bridge ))\r\n\r\nIt accepts a structured alert object and automatically formats and routes it to all configured channels.\r\n\r\n---\r\n\r\n## 📥 Input\r\n\r\nThe subflow expects an alert object on:\r\n\r\nmsg.alert\r\n\r\n### Structure\r\n```js\r\nmsg.alert = {\r\n    title: \"Alert title\",\r\n    message: \"Main alert message\",\r\n    severity: \"info | warning | critical\",\r\n    source: \"sensor or system name\",\r\n    timestamp: \"optional\",\r\n    \r\n    notify: {\r\n        ha: true,\r\n        whatsapp: true\r\n    }\r\n};\r\n```\r\n---\r\n\r\n## 🔁 Fallback behavior\r\n\r\nIf msg.alert is missing, the subflow will use:\r\n\r\n- msg.payload.message\r\n- severity = \"info\"\r\n\r\n---\r\n\r\n## 🎨 Message format\r\n\r\nAll notifications are formatted as:\r\n\r\n[emoji] [source] message\r\n\r\n### Examples:\r\nℹ️ [system] Everything is OK  \r\n⚠️ [rain_sensor] Heavy rain detected  \r\n🚨 [freezer] Temperature critical  \r\n\r\n---\r\n\r\n## 📤 Output channels\r\n\r\n### WhatsApp\r\n- Sends formatted message to configured number\r\n- Optimized for short alert messages\r\n\r\n### Home Assistant Mobile App\r\n- Sends push notification via notify.mobile_app_*\r\n- Uses:\r\n  - title = alert.title\r\n  - message = formatted message\r\n\r\n---\r\n\r\n## ⚙️ Configuration\r\n\r\nStored in:\r\n\r\nflow.get(\"notification\")\r\n\r\nExample initialization:\r\n\r\nflow.set(\"notification\", {\r\n    whatsapp: \"31621201520\",\r\n    mobile: \"mobile_app_iphone13mini_van_roland\"\r\n});\r\n\r\n---\r\n\r\n## 🚀 Usage\r\n\r\nCreate an alert:\r\n\r\nmsg.alert = {\r\n    title: \"Rain Alert\",\r\n    message: \"Heavy rain expected\",\r\n    severity: \"warning\",\r\n    source: \"weather_station\"\r\n};\r\n\r\nreturn msg;\r\n\r\nThen pass it into this subflow.\r\n\r\n---\r\n\r\n## 🧩 Design goals\r\n\r\n- Centralized notification logic\r\n- Consistent formatting across channels\r\n- Easy to extend (Telegram, MQTT, email)\r\n- Reusable across all flows\r\n- Separation of alert creation and delivery",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "84aa951d901cd2f8"
+                    }
+                ]
+            }
+        ],
+        "out": [],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "1ab1779a688dbd3f",
+        "type": "function",
+        "z": "2611c893a81b0e44",
+        "name": "SetUp Notification",
+        "func": "//See On Start tab",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "flow.set(\"notification\", {\n    whatsapp: {\n        number: \"31621201520\",   // optional\n        group: \"myHome\"          // optional\n    },\n    mobile: \"mobile_app_iphone13mini_van_roland\"\n});",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "84aa951d901cd2f8",
+        "type": "function",
+        "z": "2611c893a81b0e44",
+        "name": "HA+WA notification",
+        "func": "const notification = flow.get(\"notification\") || {};\nconst wa = notification.whatsapp || {};\n\n\nconst emoji = {\n    info: \"ℹ️\",\n    warning: \"⚠️\",\n    critical: \"🚨\"\n};\n\nconst alert = msg.alert || {\n    title: \"No title\",\n    message: msg.payload,\n    severity: \"info\"\n};\n\n// Default routing\nconst notify = Object.assign(\n    { ha: true, whatsapp: true },\n    alert.notify || {}\n);\n\nconst source = alert.source ? `[${alert.source}] ` : \"\";\nconst message =\n    `${emoji[alert.severity] || \"\"} ${source}${alert.message}`;\n\n// WhatsApp payload\nlet sendWA = false;\nif (notify.whatsapp && (wa.group || wa.number)) {\n\n    msg.whatsapp = {\n        message: message\n    };\n\n    if (wa.group) {\n        msg.whatsapp.group = wa.group;\n    } else {\n        msg.whatsapp.number = wa.number;\n    }\n\n    // safety fallback (important)\n    if (!msg.whatsapp.group && !msg.whatsapp.number) {\n        node.warn(\"WhatsApp target missing (group or number)\");\n        return msg;\n    }\n    sendWA = true;\n}\n// attach flag\nmsg._sendWA = sendWA;\n\n\n// Home Assistant payload\nlet sendHA = false;\nif (notify.ha) {\n    msg.ha = {\n        title: alert.title,\n        message: message\n    };\n    sendHA = true;\n}\n// attach flag\nmsg._sendHA = sendHA;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 140,
+        "wires": [
+            [
+                "b3eece433508bbf1",
+                "5a75014f336c9350"
+            ]
+        ]
+    },
+    {
+        "id": "853f75026d0526e8",
+        "type": "api-call-service",
+        "z": "2611c893a81b0e44",
+        "name": "HA-Whatapp",
+        "server": "e05978b74df0b170",
+        "version": 7,
+        "debugenabled": false,
+        "action": "whatsapp.send_message",
+        "floorId": [],
+        "areaId": [],
+        "deviceId": [],
+        "entityId": [],
+        "labelId": [],
+        "data": "msg.whatsapp",
+        "dataType": "jsonata",
+        "mergeContext": "",
+        "mustacheAltTags": false,
+        "outputProperties": [],
+        "queue": "none",
+        "blockInputOverrides": true,
+        "domain": "whatsapp",
+        "service": "send_message",
+        "x": 590,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1c60d18fa75b3298",
+        "type": "api-call-service",
+        "z": "2611c893a81b0e44",
+        "name": "HA-Notification",
+        "server": "e05978b74df0b170",
+        "version": 7,
+        "debugenabled": false,
+        "action": "notify.mobile_app_iphone13mini_van_roland",
+        "floorId": [],
+        "areaId": [],
+        "deviceId": [],
+        "entityId": [],
+        "labelId": [],
+        "data": "msg.ha",
+        "dataType": "jsonata",
+        "mergeContext": "",
+        "mustacheAltTags": false,
+        "outputProperties": [],
+        "queue": "none",
+        "blockInputOverrides": true,
+        "domain": "notify",
+        "service": "mobile_app_iphone13mini_van_roland",
+        "x": 600,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b3eece433508bbf1",
+        "type": "switch",
+        "z": "2611c893a81b0e44",
+        "name": "",
+        "property": "_sendWA",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 100,
+        "wires": [
+            [
+                "853f75026d0526e8"
+            ]
+        ]
+    },
+    {
+        "id": "5a75014f336c9350",
+        "type": "switch",
+        "z": "2611c893a81b0e44",
+        "name": "",
+        "property": "_sendHA",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 180,
+        "wires": [
+            [
+                "1c60d18fa75b3298"
+            ]
+        ]
+    },
+    {
+        "id": "e05978b74df0b170",
+        "type": "server",
+        "name": "RasPi5 MyHomeAssistant",
+        "version": 5,
+        "addon": false,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": true,
+        "cacheJson": true,
+        "heartbeat": false,
+        "heartbeatInterval": "30",
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": ": ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "default",
+        "statusTimeFormat": "h:m",
+        "enableGlobalContextStore": false
+    },
+    {
+        "id": "8f7f40f99b928fe9",
+        "type": "tab",
+        "label": "myHome SunRain Shades",
+        "disabled": false,
+        "info": "# ☀️ SunRain Shades\r\n\r\n**Project:** myHome  \r\n**Flow:** SunRain Shades  \r\n**Version:** 1.0  \r\n**Author:** Roland van Dalen  \r\n**Last Updated:** 2026-07-04\r\n\r\n---\r\n\r\n# 🧠 Overview\r\n\r\nThis flow provides complete monitoring, manual control and weather protection for the **SunRain Somfy RTS awning**.\r\n\r\nThe awning is controlled by an **ESPSomfy RTS** controller using MQTT, while a **HomeWizard Energy Socket** is used to determine whether the motor is running.\r\n\r\nA **Buienradar** rain forecast is continuously monitored to warn when rain is approaching. Rain notifications are automatically suppressed when the awning is already closed.\r\n\r\nThe flow has been designed as a collection of independent modules that communicate through MQTT, Link nodes and reusable subflows.\r\n\r\n---\r\n\r\n# 🏗️ Architecture\r\n\r\n```text\r\n                   ☀️ SunRain Shades\r\n\r\n           Dashboard\r\n                │\r\n                ▼\r\n      ☀️ SunRain Awning Control\r\n                │\r\n                ├──────────────► ESPSomfy RTS\r\n                │\r\n                ▼\r\n      ⚙️ Motor Running Detection\r\n                │\r\n                ▼\r\n           Dashboard\r\n\r\n                ▲\r\n                │\r\n         🌦️ Buienradar\r\n                │\r\n                ▼\r\n           🌧️ Rain Alert\r\n                │\r\n         🚦 Message Gate\r\n                │\r\n                ▼\r\n     📡 HA + WhatsApp Notification\r\n```\r\n\r\n---\r\n\r\n# 📦 Flow Modules\r\n\r\n## ☀️ SunRain Awning Control\r\n\r\nResponsible for:\r\n\r\n- Manual awning control\r\n- MQTT communication with ESPSomfy RTS\r\n- Persistent awning position\r\n- Dashboard controls\r\n\r\n---\r\n\r\n## ⚙️ HomeWizard Motor Running Detection\r\n\r\nResponsible for:\r\n\r\n- Motor running detection\r\n- Communication monitoring\r\n- LOCKED detection\r\n- Dashboard motor status\r\n\r\n---\r\n\r\n## 🌧️ Rain Alert\r\n\r\nResponsible for:\r\n\r\n- Rain forecast monitoring\r\n- Rain warning generation\r\n- Dry notification\r\n- Intelligent notification suppression\r\n\r\n---\r\n\r\n# 🔗 Reusable Subflows\r\n\r\nThe flow uses the following reusable components:\r\n\r\n| Subflow | Purpose |\r\n|----------|---------|\r\n| 🚦 Message Gate | Enables or suppresses rain warnings. |\r\n| 📡 HA + WhatsApp Notification | Delivers notifications to Home Assistant and WhatsApp. |\r\n\r\n---\r\n\r\n# 🌐 External Systems\r\n\r\nThe flow communicates with:\r\n\r\n- ESPSomfy RTS\r\n- MQTT Broker\r\n- HomeWizard Energy Socket\r\n- Buienradar Rain Forecast\r\n- Home Assistant\r\n- WhatsApp Bridge\r\n\r\n---\r\n\r\n# 🎯 Design Principles\r\n\r\nThis flow has been designed around the following principles:\r\n\r\n- Modular architecture\r\n- Reusable subflows\r\n- Persistent state where required\r\n- Clear separation of responsibilities\r\n- MQTT-first communication\r\n- Dashboard-oriented operation\r\n- Fail-safe behaviour\r\n- Self-documenting components\r\n\r\n---\r\n\r\n# 📜 Revision History\r\n\r\n| Version | Date | Changes |\r\n|---------|------|---------|\r\n| **1.0** | 2026-07-04 | Initial flow documentation and architecture overview. |",
+        "env": []
+    },
+    {
+        "id": "d34be8b5747a83bc",
+        "type": "group",
+        "z": "8f7f40f99b928fe9",
+        "name": "ESPSomfy RTS",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "1ef13ebd048f6c5d",
+            "b966129d08e8146f",
+            "8288b5de069b2507",
+            "ea957e89ca408ca2",
+            "00649ed9fa470489",
+            "1ad72b6b0a694d78",
+            "dce1b8dbe24f1b2d",
+            "96e42602f3d98caf",
+            "d7cf2cf76ea9d932",
+            "b44bec3f6c2be9c7",
+            "45771c28f5219007",
+            "a0b675613a3bb9c5",
+            "a87e3ff67eea09ea",
+            "24ae2e08426461e4",
+            "12ef9a9c54b93f7d",
+            "3e18fd5b6a9dedd9"
+        ],
+        "x": 34,
+        "y": 19,
+        "w": 912,
+        "h": 562,
+        "info": "# ☀️ SunRain Awning Control\r\n\r\n**Module:** SunRain  \r\n**Project:** myHome  \r\n**Version:** 1.0  \r\n**Author:** Roland van Dalen  \r\n**Last Updated:** 2026-07-03\r\n\r\n---\r\n\r\n# ☀️ ESPSomfy RTS\r\n\r\nThe SunRain awning is controlled by an **ESPSomfy RTS** controller.\r\n\r\nESPSomfy RTS is an open-source hardware and software project developed by [rstrouse](https://github.com/rstrouse/ESPSomfy-RTS) that bridges **Somfy RTS (Radio Technology Somfy)** motors with modern home automation systems using MQTT, Home Assistant and web-based APIs.\r\n\r\nThis project uses the MQTT interface of ESPSomfy RTS for all awning control and position feedback.\r\n\r\n---\r\n\r\n## 🧠 Function\r\n\r\nThis flow provides complete control and monitoring of the SunRain awning.\r\n\r\nManual commands from the dashboard are translated into MQTT commands for the ESPSomfy RTS controller.\r\n\r\nThe reported awning position is continuously monitored and stored persistently. The stored position is shared with other automation flows, such as the **Rain Alert** system, allowing them to make decisions based on the current awning position.\r\n\r\nTo prevent incorrect position updates immediately after a Node-RED deploy, the initial MQTT position message is suppressed before updating the stored position.\r\n\r\n---\r\n\r\n## 📥 Inputs\r\n\r\n### Dashboard Commands\r\n\r\nManual control buttons:\r\n\r\n- UP\r\n- STOP\r\n- DOWN\r\n- 25%\r\n- 50%\r\n- 75%\r\n\r\nPublished MQTT topics:\r\n\r\n```text\r\nsunrain/shades/1/direction/set\r\nsunrain/shades/1/target/set\r\n```\r\n\r\n---\r\n\r\n### Awning Position\r\n\r\nMQTT topic:\r\n\r\n```text\r\nsunrain/shades/1/position\r\n```\r\n\r\nExample payload:\r\n\r\n```text\r\n50\r\n```\r\n\r\n---\r\n\r\n## 📤 Outputs\r\n\r\nThe flow provides:\r\n\r\n### Dashboard\r\n\r\n- Current awning position\r\n\r\n### Flow Context\r\n\r\nUpdates the persistent variable:\r\n\r\n```javascript\r\nflow.set(\"sunrainAwningPosition\", position, \"file\");\r\n```\r\n\r\n### Link Out\r\n\r\nProvides the current awning position to other flows, including:\r\n\r\n- Rain Alert\r\n- Future automation flows\r\n\r\n---\r\n\r\n## 🔄 Processing\r\n\r\n### Manual Control\r\n\r\nDashboard button presses publish MQTT commands directly to the ESPSomfy RTS controller.\r\n\r\n---\r\n\r\n### Position Monitoring\r\n\r\nThe reported awning position is received from ESPSomfy RTS via MQTT.\r\n\r\nTo prevent incorrect updates immediately after deployment, the first MQTT position message is ignored using an **RBE (Suppress Initial Value)** node.\r\n\r\nSubsequent position updates are considered valid.\r\n\r\n---\r\n\r\n### Persistent Position Storage\r\n\r\nEach valid position update is stored persistently.\r\n\r\nThe stored position is used to:\r\n\r\n- update the dashboard\r\n- control the Rain Alert Message Gate\r\n- provide a reliable awning state after Node-RED restarts\r\n- share the current position with other automation flows\r\n\r\n---\r\n\r\n## 💾 Flow Context\r\n\r\n### Owned Variables\r\n\r\n| Variable | Type | Store | Description |\r\n|----------|------|-------|-------------|\r\n| `sunrainAwningPosition` | Number | file | Last known awning position (0–100%). Persistently stored and shared with other flows. |\r\n\r\n### Referenced Variables\r\n\r\nThis flow does not reference flow context variables owned by other groups.\r\n\r\n---\r\n\r\n## 🔗 Dependencies\r\n\r\n### ESPSomfy RTS\r\n\r\nProvides:\r\n\r\n- MQTT command interface\r\n- Position feedback\r\n- RTS communication with the Somfy motor\r\n\r\n---\r\n\r\n### Message Gate (Rain Alert)\r\n\r\nConsumes the persistent awning position to enable or suppress rain notifications.\r\n\r\n---\r\n\r\n### MQTT Broker\r\n\r\nProvides communication between Node-RED and the ESPSomfy RTS controller.\r\n\r\n---\r\n\r\n## ⚙️ Configuration\r\n\r\n| Parameter | Default | Description |\r\n|-----------|---------|-------------|\r\n| Position topic | `sunrain/shades/1/position` | Reports the current awning position. |\r\n| Direction topic | `sunrain/shades/1/direction/set` | Controls UP, STOP and DOWN commands. |\r\n| Target topic | `sunrain/shades/1/target/set` | Sets the desired awning position (0–100%). |\r\n| Initial MQTT suppression | Enabled | Prevents incorrect position updates immediately after deployment. |\r\n\r\n---\r\n\r\n## 📊 Dashboard\r\n\r\nThe dashboard provides:\r\n\r\n- UP button\r\n- STOP button\r\n- DOWN button\r\n- 25%, 50% and 75% preset position buttons\r\n- Current awning position (%)\r\n\r\n---\r\n\r\n## 🧩 Design Goals\r\n\r\n- Simple and intuitive awning control\r\n- Reliable MQTT communication with ESPSomfy RTS\r\n- Persistent position storage across Node-RED restarts\r\n- Protection against invalid startup position reports\r\n- Centralized position information for reuse by other automation flows\r\n- Clear separation of control, monitoring and state management\r\n- Easily reusable in other Somfy RTS installations\r\n\r\n---\r\n\r\n## 📜 Revision History\r\n\r\n| Version | Date | Changes |\r\n|---------|------|---------|\r\n| **1.0** | 2026-07-03 | Initial documentation. Added module structure, persistent position storage, dependency overview, flow context documentation and design goals. |"
+    },
+    {
+        "id": "c18386d1988b7a9c",
+        "type": "group",
+        "z": "8f7f40f99b928fe9",
+        "name": "HW Motor running detect",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "24575e8a98eac450",
+            "794883e926f57fe6",
+            "edf2f42c9beae9ef",
+            "hw_api",
+            "motor_detect",
+            "catch_hw",
+            "hw_fail_counter",
+            "ui_motor"
+        ],
+        "x": 34,
+        "y": 619,
+        "w": 992,
+        "h": 222,
+        "info": "# ⚙️ HomeWizard Motor Running Detection\r\n\r\n**Module:** SunRain  \r\n**Project:** myHome  \r\n**Version:** 1.0  \r\n**Author:** Roland van Dalen  \r\n**Last Updated:** 2026-07-03\r\n\r\n---\r\n\r\n## 🧠 Function\r\n\r\nThe SunRain Somfy motor does not provide a status signal indicating whether it is running.\r\n\r\nThis flow determines the motor state by monitoring the power consumption of a dedicated HomeWizard Energy Socket. While the motor is operating it consumes approximately **200 W**, allowing reliable detection of whether the motor is **RUNNING** or **STOPPED**.\r\n\r\nThe flow also detects communication failures with the HomeWizard device. If the Somfy motor's safety switch disconnects the power, the HomeWizard API becomes unreachable. Instead of displaying an incorrect motor status, the dashboard reports the motor as **LOCKED**.\r\n\r\n---\r\n\r\n## 📥 Inputs\r\n\r\n### Poll Timer\r\n\r\nThe HomeWizard API is polled every **2 seconds**.\r\n\r\n### HomeWizard API\r\n\r\n```text\r\nGET http://192.168.1.34/api/v1/data\r\n```\r\n\r\nExample response:\r\n\r\n```json\r\n{\r\n    \"active_power_w\": 198\r\n}\r\n```\r\n\r\n---\r\n\r\n## 📤 Outputs\r\n\r\nThe flow produces one of the following motor states:\r\n\r\n| State | Description |\r\n|--------|-------------|\r\n| **RUNNING** | Motor is operating. |\r\n| **STOPPED** | Motor is idle. |\r\n| **LOCKED** | HomeWizard Energy Socket is unreachable. |\r\n\r\nAdditional output:\r\n\r\n```javascript\r\nmsg.power\r\n```\r\n\r\ncontains the measured motor power in Watts and can be used by other automation flows.\r\n\r\n---\r\n\r\n## 🔄 Processing\r\n\r\n### Motor State Detection\r\n\r\nThe measured motor power is compared with a configurable threshold.\r\n\r\n| Measured Power | Motor State |\r\n|----------------|-------------|\r\n| > 50 W | RUNNING |\r\n| ≤ 50 W | STOPPED |\r\n\r\nA successful API response also resets the communication error counter.\r\n\r\n---\r\n\r\n### Communication Failure Detection\r\n\r\nCommunication failures from the HomeWizard API are monitored using a **Catch** node.\r\n\r\nEach failed request increments a communication error counter.\r\n\r\nAfter **two consecutive failures**, the flow assumes the HomeWizard Energy Socket has become unreachable (typically because the Somfy safety switch has disconnected the motor power).\r\n\r\nThe dashboard status changes to:\r\n\r\n```text\r\nLOCKED\r\n```\r\n\r\nThe error counter is automatically reset after the next successful API response.\r\n\r\n---\r\n\r\n## 💾 Flow Context\r\n\r\n### Owned Variables\r\n\r\n| Variable | Type | Store | Description |\r\n|----------|------|-------|-------------|\r\n| `hwErrors` | Number | memory | Counts consecutive HomeWizard communication failures. Reset after a successful API response. Used to determine when the motor should be reported as **LOCKED**. |\r\n\r\n### Referenced Variables\r\n\r\nThis flow does not reference flow context variables owned by other groups.\r\n\r\n---\r\n\r\n## 🔗 Dependencies\r\n\r\n### HomeWizard Energy Socket\r\n\r\nProvides:\r\n\r\n- Real-time motor power measurement\r\n- HTTP API used for polling\r\n\r\n---\r\n\r\n### Dashboard\r\n\r\nDisplays the current motor status:\r\n\r\n- RUNNING\r\n- STOPPED\r\n- LOCKED\r\n\r\n---\r\n\r\n### HomeWizard API\r\n\r\nProvides the measured motor power used to determine the motor state.\r\n\r\n---\r\n\r\n## ⚙️ Configuration\r\n\r\n| Parameter | Default | Description |\r\n|-----------|---------|-------------|\r\n| Poll interval | 2 seconds | Interval between HomeWizard API requests. |\r\n| Running threshold | 50 W | Minimum measured power required to report the motor as RUNNING. |\r\n| Communication failures | 2 | Number of consecutive API failures before reporting LOCKED. |\r\n\r\n---\r\n\r\n## 📊 Dashboard\r\n\r\nThe dashboard displays the current motor status:\r\n\r\n- **RUNNING** – Motor is moving.\r\n- **STOPPED** – Motor is idle.\r\n- **LOCKED** – HomeWizard Energy Socket is unreachable (motor power disconnected).\r\n\r\nThis provides immediate feedback about both motor activity and communication status.\r\n\r\n---\r\n\r\n## 🧩 Design Goals\r\n\r\n- Reliable motor state detection without additional sensors.\r\n- Reuse existing HomeWizard Energy Socket measurements.\r\n- Detect motor power loss through communication failure.\r\n- Prevent incorrect motor status when the safety switch disconnects power.\r\n- Provide a simple and reusable motor state for dashboards and automation flows.\r\n- Separate motor detection from motor control logic.\r\n\r\n---\r\n\r\n## 📜 Revision History\r\n\r\n| Version | Date | Changes |\r\n|---------|------|---------|\r\n| **1.0** | 2026-07-03 | Initial documentation. Added module structure, communication failure detection, configuration overview, flow context documentation, dependency overview and design goals. |"
+    },
+    {
+        "id": "bc31e53e6eeff32b",
+        "type": "group",
+        "z": "8f7f40f99b928fe9",
+        "name": "Rain Alert",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "b515ccf587e36e44",
+            "ba3ae302e2d38c6a",
+            "7ac487380f85cf45",
+            "a86a2475d8649eb4",
+            "d24c0de4b52782ea",
+            "a2828a287df4e0f9",
+            "195f9741cd65d494",
+            "9f822a5d01a5d1fb",
+            "187285b02e5423e5",
+            "d13a4537494b336a",
+            "855858dd492b684b",
+            "de488926cd8adf18",
+            "50207869b60a0cfe",
+            "39c4b20b160ab092",
+            "a4fe12dba33ea74c"
+        ],
+        "x": 34,
+        "y": 899,
+        "w": 1212,
+        "h": 402,
+        "info": "# 🌧️ Rain Alert\r\n\r\n**Module:** SunRain  \r\n**Project:** myHome  \r\n**Version:** 1.0  \r\n**Author:** Roland van Dalen  \r\n**Last Updated:** 2026-07-03\r\n\r\n---\r\n\r\n## 🧠 Function\r\n\r\nThis flow monitors the Buienradar rain forecast and generates notifications when rain is expected within a configurable alert window.\r\n\r\nRain warnings are only delivered when the **SunRain awning is open** (position > 0%), preventing unnecessary notifications when the awning is already retracted.\r\n\r\nWhen the forecast changes back to dry, a single **\"No rain expected anymore\"** notification is sent, but only if a rain warning was previously delivered.\r\n\r\nThis flow therefore provides an intelligent rain notification system with automatic suppression of redundant messages.\r\n\r\n---\r\n\r\n## 📥 Inputs\r\n\r\n### Rain Forecast\r\n\r\nMQTT topic:\r\n\r\n```text\r\nweather/rain\r\n```\r\n\r\nExample payload:\r\n\r\n```json\r\n{\r\n    \"location\": \"myHome\",\r\n    \"rainMin\": 10,\r\n    \"firstRainMM\": 0.01,\r\n    \"maxRainMM\": 1.0\r\n}\r\n```\r\n\r\n### Awning Position\r\n\r\nThe current awning position is supplied indirectly through the **Message Gate**, which is controlled by the **SunRain Awning Control** group.\r\n\r\n| Position | Rain Warnings |\r\n|----------|---------------|\r\n| 0 % | Disabled |\r\n| 1–100 % | Enabled |\r\n\r\n---\r\n\r\n## 📤 Outputs\r\n\r\n### Output 1\r\n\r\nRain warning notifications.\r\n\r\nThese messages are forwarded to the **Message Gate**, which determines whether they should be delivered.\r\n\r\n---\r\n\r\n### Output 2\r\n\r\nDry notifications.\r\n\r\nThese messages bypass the **Message Gate**, but are only generated if a rain warning was actually delivered earlier.\r\n\r\n---\r\n\r\n## 🔄 Processing\r\n\r\n### Rain Detection\r\n\r\nThe flow evaluates the incoming Buienradar forecast.\r\n\r\nA rain warning is generated when:\r\n\r\n- rain is expected within the configured threshold (currently **20 minutes**)\r\n- no warning has already been generated for the current rain event\r\n\r\n---\r\n\r\n### Message Gating\r\n\r\nRain warnings are forwarded through the **Message Gate**.\r\n\r\nIf the awning is already closed (0%), the Message Gate suppresses the warning.\r\n\r\nOnly warnings that successfully pass the Message Gate are marked as delivered.\r\n\r\n---\r\n\r\n### Dry Detection\r\n\r\nWhen the forecast changes to:\r\n\r\n```text\r\nrainMin = -1\r\n```\r\n\r\nthe flow determines whether a rain warning was actually delivered.\r\n\r\nIf so, a single notification is generated:\r\n\r\n```text\r\nNo rain expected anymore\r\n```\r\n\r\nThis prevents repeated \"dry\" notifications after suppressed rain warnings.\r\n\r\n---\r\n\r\n## 💾 Flow Context\r\n\r\n### Owned Variables\r\n\r\n| Variable | Type | Store | Description |\r\n|----------|------|-------|-------------|\r\n| `rainState` | String | memory | Current rain event state (`rain` or `dry`). Prevents duplicate rain warnings during the same rain event. |\r\n| `rainWarningActuallySent` | Boolean | memory | Indicates whether a rain warning successfully passed the Message Gate. Determines whether a corresponding dry notification should be generated. |\r\n\r\n### Referenced Variables\r\n\r\nThis flow does not directly reference flow context variables owned by other groups.\r\n\r\n---\r\n\r\n## 🔗 Dependencies\r\n\r\n### Message Gate\r\n\r\nPurpose:\r\n\r\nSuppresses rain warnings when the awning is already closed.\r\n\r\nConfiguration:\r\n\r\n| Property | Value |\r\n|----------|-------|\r\n| `stateName` | `messageGate` |\r\n\r\n---\r\n\r\n### HA + WhatsApp Notification\r\n\r\nPurpose:\r\n\r\nFormats and delivers notifications to:\r\n\r\n- Home Assistant Mobile App\r\n- WhatsApp\r\n\r\n---\r\n\r\n### SunRain Awning Control\r\n\r\nProvides the awning position that controls the Message Gate.\r\n\r\n---\r\n\r\n### Buienradar Rain Forecast\r\n\r\nProvides the rain forecast published on:\r\n\r\n```text\r\nweather/rain\r\n```\r\n\r\n---\r\n\r\n## ⚙️ Configuration\r\n\r\n| Parameter | Default | Description |\r\n|-----------|---------|-------------|\r\n| Rain alert threshold | 20 minutes | Maximum time before rain for generating a warning. |\r\n| Dry condition | `rainMin = -1` | Indicates that no rain is expected anymore. |\r\n\r\n---\r\n\r\n## 📊 Dashboard\r\n\r\nThe flow updates the dashboard with:\r\n\r\n- Forecast location\r\n- Rain status\r\n- Minutes until rain\r\n- Initial rain intensity\r\n- Peak rain intensity\r\n\r\n---\r\n\r\n## 🧩 Design Goals\r\n\r\n- Early warning before rain starts.\r\n- No duplicate rain warnings.\r\n- No unnecessary notifications when the awning is already closed.\r\n- One \"No rain expected anymore\" notification per rain event.\r\n- Separation of rain detection, message gating and notification delivery.\r\n- Reusable notification logic through dedicated subflows.\r\n- Modular architecture suitable for future automation extensions.\r\n\r\n---\r\n\r\n## 📜 Revision History\r\n\r\n| Version | Date | Changes |\r\n|---------|------|---------|\r\n| **1.0** | 2026-07-03 | Initial documentation. Added intelligent rain detection, Message Gate integration, dry notification logic, flow context documentation, dependency overview and design goals. |"
+    },
+    {
+        "id": "1ef13ebd048f6c5d",
+        "type": "debug",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Test ESPSomfy RTS messages",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 470,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b966129d08e8146f",
+        "type": "mqtt in",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "",
+        "topic": "sunrain/shades/1/#",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "58fca7c7b7ca862a",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 170,
+        "y": 60,
+        "wires": [
+            [
+                "1ef13ebd048f6c5d"
+            ]
+        ]
+    },
+    {
+        "id": "8288b5de069b2507",
+        "type": "ui_button",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Up",
+        "group": "ui_group_shades",
+        "order": 3,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "UP",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "-1",
+        "payloadType": "num",
+        "topic": "sunrain/shades/1/direction/set",
+        "topicType": "str",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "1ad72b6b0a694d78"
+            ]
+        ]
+    },
+    {
+        "id": "ea957e89ca408ca2",
+        "type": "ui_button",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Stop",
+        "group": "ui_group_shades",
+        "order": 4,
+        "width": 2,
+        "height": 1,
+        "label": "STOP",
+        "payload": "0",
+        "payloadType": "num",
+        "topic": "sunrain/shades/1/direction/set",
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "1ad72b6b0a694d78"
+            ]
+        ]
+    },
+    {
+        "id": "00649ed9fa470489",
+        "type": "ui_button",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Down",
+        "group": "ui_group_shades",
+        "order": 5,
+        "width": 2,
+        "height": 1,
+        "label": "DOWN",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "sunrain/shades/1/direction/set",
+        "x": 130,
+        "y": 220,
+        "wires": [
+            [
+                "1ad72b6b0a694d78"
+            ]
+        ]
+    },
+    {
+        "id": "1ad72b6b0a694d78",
+        "type": "mqtt out",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "MQTT Shade Command",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "mqtt_broker",
+        "x": 450,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "24575e8a98eac450",
+        "type": "inject",
+        "z": "8f7f40f99b928fe9",
+        "g": "c18386d1988b7a9c",
+        "name": "Poll 2sec",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "1",
+        "payloadType": "str",
+        "x": 150,
+        "y": 720,
+        "wires": [
+            [
+                "794883e926f57fe6",
+                "hw_api"
+            ]
+        ]
+    },
+    {
+        "id": "794883e926f57fe6",
+        "type": "trigger",
+        "z": "8f7f40f99b928fe9",
+        "g": "c18386d1988b7a9c",
+        "name": "Show trigger",
+        "op1": "1",
+        "op2": "0",
+        "op1type": "str",
+        "op2type": "str",
+        "duration": "250",
+        "extend": false,
+        "units": "ms",
+        "reset": "",
+        "outputs": 1,
+        "x": 410,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "edf2f42c9beae9ef",
+        "type": "debug",
+        "z": "8f7f40f99b928fe9",
+        "g": "c18386d1988b7a9c",
+        "name": "HW API",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "dce1b8dbe24f1b2d",
+        "type": "ui_button",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Position 25%",
+        "group": "ui_group_shades",
+        "order": 6,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "25%",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "25",
+        "payloadType": "num",
+        "topic": "sunrain/shades/1/target/set",
+        "topicType": "str",
+        "x": 150,
+        "y": 280,
+        "wires": [
+            [
+                "1ad72b6b0a694d78"
+            ]
+        ]
+    },
+    {
+        "id": "96e42602f3d98caf",
+        "type": "ui_button",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Position 50%",
+        "group": "ui_group_shades",
+        "order": 7,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "50%",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "50",
+        "payloadType": "num",
+        "topic": "sunrain/shades/1/target/set",
+        "topicType": "str",
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "1ad72b6b0a694d78"
+            ]
+        ]
+    },
+    {
+        "id": "d7cf2cf76ea9d932",
+        "type": "ui_button",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Position 75%",
+        "group": "ui_group_shades",
+        "order": 8,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "75%",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "75",
+        "payloadType": "num",
+        "topic": "sunrain/shades/1/target/set",
+        "topicType": "str",
+        "x": 150,
+        "y": 360,
+        "wires": [
+            [
+                "1ad72b6b0a694d78"
+            ]
+        ]
+    },
+    {
+        "id": "45771c28f5219007",
+        "type": "mqtt in",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "",
+        "topic": "sunrain/shades/1/position",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "58fca7c7b7ca862a",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 170,
+        "y": 420,
+        "wires": [
+            [
+                "a87e3ff67eea09ea",
+                "a0b675613a3bb9c5"
+            ]
+        ]
+    },
+    {
+        "id": "12ef9a9c54b93f7d",
+        "type": "ui_text",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "group": "ui_group_shades",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "name": "Position",
+        "label": "Position",
+        "format": "{{msg.payload}} %",
+        "layout": "",
+        "className": "",
+        "x": 800,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "a87e3ff67eea09ea",
+        "type": "debug",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "rawPosition",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 410,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "hw_api",
+        "type": "http request",
+        "z": "8f7f40f99b928fe9",
+        "g": "c18386d1988b7a9c",
+        "name": "HomeWizard API",
+        "method": "GET",
+        "ret": "obj",
+        "url": "http://192.168.1.34/api/v1/data",
+        "senderr": true,
+        "x": 410,
+        "y": 720,
+        "wires": [
+            [
+                "motor_detect"
+            ]
+        ]
+    },
+    {
+        "id": "motor_detect",
+        "type": "function",
+        "z": "8f7f40f99b928fe9",
+        "g": "c18386d1988b7a9c",
+        "name": "Motor Running Detect",
+        "func": "// Successful HomeWizard response\n// Reset communication error counter\nflow.set('hwErrors', 0);\n\nconst power = Number(msg.payload.active_power_w);\n\nif (power > 50) {\n    msg.payload = 'RUNNING';\n} else {\n    msg.payload = 'STOPPED';\n}\n\nmsg.power = power;\n\nreturn msg;",
+        "outputs": 1,
+        "x": 660,
+        "y": 720,
+        "wires": [
+            [
+                "ui_motor",
+                "edf2f42c9beae9ef"
+            ]
+        ]
+    },
+    {
+        "id": "catch_hw",
+        "type": "catch",
+        "z": "8f7f40f99b928fe9",
+        "g": "c18386d1988b7a9c",
+        "name": "Catch HomeWizard Error",
+        "scope": [
+            "hw_api"
+        ],
+        "uncaught": false,
+        "x": 430,
+        "y": 800,
+        "wires": [
+            [
+                "hw_fail_counter"
+            ]
+        ]
+    },
+    {
+        "id": "hw_fail_counter",
+        "type": "function",
+        "z": "8f7f40f99b928fe9",
+        "g": "c18386d1988b7a9c",
+        "name": "Power off Detect",
+        "func": "/*\nIf the safety switch on the Somfy motor has cut off the power, an EHOSTUNREACH error message is received via the HW API (\nstatus RequestError: connect EHOSTUNREACH 192.168.1.34:80)\nIn that case, the message “Locked” is displayed on the dashboard\n*/\n\nlet errors = flow.get('hwErrors') || 0;\nerrors++;\nflow.set('hwErrors', errors);\n\nif (errors >= 2) {\n    msg.payload = 'LOCKED';\n    return msg;\n}\n\nreturn null;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 800,
+        "wires": [
+            [
+                "ui_motor",
+                "edf2f42c9beae9ef"
+            ]
+        ]
+    },
+    {
+        "id": "ui_motor",
+        "type": "ui_text",
+        "z": "8f7f40f99b928fe9",
+        "g": "c18386d1988b7a9c",
+        "group": "ui_group_shades",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "name": "Motor Status",
+        "label": "Motor",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 930,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "b515ccf587e36e44",
+        "type": "mqtt in",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "",
+        "topic": "weather/rain",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "58fca7c7b7ca862a",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 130,
+        "y": 1040,
+        "wires": [
+            [
+                "ba3ae302e2d38c6a",
+                "39c4b20b160ab092"
+            ]
+        ]
+    },
+    {
+        "id": "ba3ae302e2d38c6a",
+        "type": "debug",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "Rain Forecast",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 360,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "7ac487380f85cf45",
+        "type": "debug",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "Message",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "a86a2475d8649eb4",
+        "type": "subflow:2611c893a81b0e44",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "x": 1130,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "d24c0de4b52782ea",
+        "type": "link in",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "From Rain Function",
+        "links": [
+            "aca357c399f15508"
+        ],
+        "x": 115,
+        "y": 1180,
+        "wires": [
+            [
+                "a2828a287df4e0f9",
+                "195f9741cd65d494",
+                "187285b02e5423e5",
+                "d13a4537494b336a",
+                "9f822a5d01a5d1fb"
+            ]
+        ]
+    },
+    {
+        "id": "a2828a287df4e0f9",
+        "type": "ui_text",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "group": "e42dd733950a5f5f",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "name": "Location",
+        "label": "Location",
+        "format": "{{msg.payload.location}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 410,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "195f9741cd65d494",
+        "type": "ui_text",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "group": "e42dd733950a5f5f",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "name": "Status",
+        "label": "Status",
+        "format": "{{msg.payload.rainMin === -1 ? 'Dry ☀️' : 'Rain expected 🌧'}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 400,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "9f822a5d01a5d1fb",
+        "type": "ui_text",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "group": "e42dd733950a5f5f",
+        "order": 3,
+        "width": 6,
+        "height": 1,
+        "name": "rainMin",
+        "label": "Rain in",
+        "format": "{{msg.payload.rainMin}} min",
+        "layout": "row-spread",
+        "className": "",
+        "x": 410,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "187285b02e5423e5",
+        "type": "ui_text",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "group": "e42dd733950a5f5f",
+        "order": 4,
+        "width": 6,
+        "height": 1,
+        "name": "firstRainMM",
+        "label": "Initial intensity",
+        "format": "{{msg.payload.firstRainMM}} mm",
+        "layout": "row-spread",
+        "className": "",
+        "x": 420,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "d13a4537494b336a",
+        "type": "ui_text",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "group": "e42dd733950a5f5f",
+        "order": 5,
+        "width": 6,
+        "height": 1,
+        "name": "maxRainMM",
+        "label": "Peak intensity",
+        "format": "{{msg.payload.maxRainMM}} mm",
+        "layout": "row-spread",
+        "className": "",
+        "x": 420,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "855858dd492b684b",
+        "type": "subflow:7f2a4d9b3c8e1001",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "",
+        "x": 640,
+        "y": 1000,
+        "wires": [
+            [
+                "50207869b60a0cfe"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "de488926cd8adf18",
+        "type": "function",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "Enable Rain Alert",
+        "func": "// Enable rain alert gate only when awning is NOT at 0%\n\nconst position = Number(msg.payload);\n\n// Ignore invalid values\nif (isNaN(position)) {\n    node.warn(\"Invalid awning position: \" + msg.payload);\n    return null;\n}\n\n// 0% = awning closed/retracted → disable rain notifications\n// anything else = awning open → enable rain notifications\nconst enableGate = position !== 0;\n\nmsg.topic = \"enable\";\nmsg.payload = enableGate;\n\nmsg.awning = {\n    position: position,\n    rainAlertGate: enableGate ? \"enabled\" : \"disabled\"\n};\n\nnode.status({\n    fill: enableGate ? \"green\" : \"red\",\n    shape: \"dot\",\n    text: enableGate\n        ? `ENABLED - awning ${position}%`\n        : \"BLOCKED - awning 0%\"\n});\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 940,
+        "wires": [
+            [
+                "855858dd492b684b"
+            ]
+        ]
+    },
+    {
+        "id": "b44bec3f6c2be9c7",
+        "type": "function",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Save / Restore Awning Position",
+        "func": "//See On Start tab too\n\n//Fix Issue -after Deploy, the position become 100%\n\nconst KEY = \"sunrainAwningPosition\";\n\nlet position = Number(msg.payload);\n\n// Ignore invalid values\nif (isNaN(position)) {\n    node.warn(\"Invalid awning position: \" + msg.payload);\n    return null;\n}\n\n// Save position persistently\nflow.set(KEY, position, \"file\");\n\n// Output 1: dashboard\nconst dashMsg = {\n    payload: position\n};\n\n// Output 2: gate control\nconst gateMsg = {\n    payload: position\n};\n\nnode.status({\n    fill: \"blue\",\n    shape: \"dot\",\n    text: `saved ${position}%`\n});\n\nreturn [dashMsg, gateMsg];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nconst KEY = \"sunrainAwningPosition\";\n\nconst position = flow.get(KEY, \"file\");\n\nnode.status({\n    fill: \"blue\",\n    shape: \"ring\",\n    text: position === undefined ? \"unknown\" : `saved ${position}%`\n});",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 520,
+        "wires": [
+            [
+                "12ef9a9c54b93f7d",
+                "24ae2e08426461e4"
+            ],
+            [
+                "3e18fd5b6a9dedd9"
+            ]
+        ]
+    },
+    {
+        "id": "24ae2e08426461e4",
+        "type": "debug",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "savedPosition",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "a0b675613a3bb9c5",
+        "type": "rbe",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "suppress initial value",
+        "func": "rbei",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 260,
+        "y": 520,
+        "wires": [
+            [
+                "b44bec3f6c2be9c7"
+            ]
+        ]
+    },
+    {
+        "id": "50207869b60a0cfe",
+        "type": "function",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "Mark Rain Warning Sent",
+        "func": "flow.set(\"rainWarningActuallySent\", true);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 1000,
+        "wires": [
+            [
+                "a86a2475d8649eb4"
+            ]
+        ]
+    },
+    {
+        "id": "39c4b20b160ab092",
+        "type": "function",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "Rain alert Message",
+        "func": "const RAIN_WITHIN_MIN = 20;\n\nlet rain = msg.payload;\n\nif (typeof rain === \"string\") {\n    try {\n        rain = JSON.parse(rain);\n    } catch (err) {\n        node.warn(\"Invalid rain payload JSON\");\n        return null;\n    }\n}\n\nconst rainMin = Number(rain.rainMin);\nconst firstRainMM = Number(rain.firstRainMM || 0);\nconst maxRainMM = Number(rain.maxRainMM || 0);\nconst location = rain.location || \"unknown\";\n\n// Dry again\nif (rainMin < 0) {\n\n    flow.set(\"rainState\", \"dry\");\n\n    if (flow.get(\"rainWarningActuallySent\") !== true) {\n        return null;\n    }\n\n    flow.set(\"rainWarningActuallySent\", false);\n\n    msg.alert = {\n        title: \"Rain Forecast\",\n        message: \"No rain expected anymore\",\n        severity: \"info\",\n        source: \"Buienradar\",\n        timestamp: new Date().toLocaleString(),\n        notify: {\n            ha: true,\n            whatsapp: true\n        }\n    };\n\n    return [null, msg];\n}\n\n// Rain expected, but not within 20 minutes\nif (rainMin > RAIN_WITHIN_MIN) {\n    return null;\n}\n\n// Already generated rain warning for this rain period\nif (flow.get(\"rainState\") === \"rain\") {\n    return null;\n}\n\nflow.set(\"rainState\", \"rain\");\n\nmsg.alert = {\n    title: \"Rain Alert\",\n    message: `Rain expected in ${rainMin} min at ${location}. Initial intensity ${firstRainMM} mm/h, peak ${maxRainMM} mm/h.`,\n    severity: \"warning\",\n    source: \"Buienradar\",\n    timestamp: new Date().toLocaleString(),\n    notify: {\n        ha: true,\n        whatsapp: true\n    }\n};\n\nreturn [msg, null];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 1040,
+        "wires": [
+            [
+                "7ac487380f85cf45",
+                "855858dd492b684b"
+            ],
+            [
+                "7ac487380f85cf45",
+                "a86a2475d8649eb4"
+            ]
+        ]
+    },
+    {
+        "id": "3e18fd5b6a9dedd9",
+        "type": "link out",
+        "z": "8f7f40f99b928fe9",
+        "g": "d34be8b5747a83bc",
+        "name": "Saved Awning positon",
+        "mode": "link",
+        "links": [
+            "a4fe12dba33ea74c"
+        ],
+        "x": 765,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "a4fe12dba33ea74c",
+        "type": "link in",
+        "z": "8f7f40f99b928fe9",
+        "g": "bc31e53e6eeff32b",
+        "name": "link in 1",
+        "links": [
+            "3e18fd5b6a9dedd9"
+        ],
+        "x": 195,
+        "y": 940,
+        "wires": [
+            [
+                "de488926cd8adf18"
+            ]
+        ]
+    },
+    {
+        "id": "58fca7c7b7ca862a",
+        "type": "mqtt-broker",
+        "name": "RasPi5 MyHome MQTT Broker",
+        "broker": "192.168.1.10",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ui_group_shades",
+        "type": "ui_group",
+        "name": "SunRain",
+        "tab": "ui_tab_main",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "mqtt_broker",
+        "type": "mqtt-broker",
+        "name": "MQTT",
+        "broker": "localhost",
+        "port": "1883",
+        "keepalive": "60",
+        "cleansession": true
+    },
+    {
+        "id": "e42dd733950a5f5f",
+        "type": "ui_group",
+        "name": "Rain Forecast",
+        "tab": "ui_tab_main",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ui_tab_main",
+        "type": "ui_tab",
+        "name": "Shade Control",
+        "icon": "dashboard",
+        "order": 16,
+        "disabled": false,
+        "hidden": false
+    }
+]
