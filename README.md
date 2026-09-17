@@ -47,3 +47,19 @@ pin connection of the ESP32 S3 Xiao Seeed Studio;
 Here a screenshot of my ESPSomfyRTS Radio setting;
 
 <img width="40%" alt="image" src="https://github.com/user-attachments/assets/dd554f1b-836c-40dd-8811-f60dbd8e4370" />
+
+## Schematic & PCB
+
+I made a small PCB for it
+
+<img width="50%" alt="image" src="https://github.com/user-attachments/assets/7d9d914d-bd6e-429b-8e6d-a58af10f896b" />
+
+<img width="50%" alt="ESPSomfyRTS-PcbLayout" src="https://github.com/user-attachments/assets/423ef278-7971-42b5-91cc-b8556553dec7" />
+
+
+<img width="50%" alt="image" src="https://github.com/user-attachments/assets/06ed107b-ca40-4be6-8069-9680e503d5f3" />
+
+
+<img width="50%" alt="image" src="https://github.com/user-attachments/assets/2bb88ea2-abb1-45a3-ba3d-a320ddaaafa4" />
+
+And "boxified" an [enclosure](https://cad.onshape.com/documents/2429cd535c2c818681c446f4/w/762b6c313c33766c159c34b3/e/4a0a0d23bcb24ef244694428) for it (see also my [Boxify Instructable](https://www.instructables.com/-Boxify-a-Parametric-Electronics-Enclosure-Framewo))
