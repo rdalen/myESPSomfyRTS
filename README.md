@@ -10,4 +10,34 @@ I made a DIY controller to operate my SunRain shade, based on the open-source ES
 ## Key Features
 - Smart Home Integration: It works smoothly with platforms like Home Assistant and nodeRed for local automations and remote access.
 - Position Tracking: Tracks the open or closed percentage of the shade, even besides the physical remote
-- See for the code, wiring guides, and instructions on the official ESPSomfy-RTS project page.
+
+See for the code, wiring guides, and instructions on the official [ESPSomfy-RTS project page](https://github.com/rstrouse/ESPSomfy-RTS).
+and an instruction video on [youtube](https://www.youtube.com/watch?v=1acVJ0xWJgs)
+
+<img width="50%" alt="image" src="https://github.com/user-attachments/assets/90fb8032-c2f1-48a3-870c-ac696d3649e5" />
+
+My version of the CC1101-based module (E07-M1101D-SMA) exposes only a single GDO line (or internally tie functions together), while ESPSomfy is often configured expecting separate RX and TX signal pins. 
+
+By assigning both RX and TX to the same GPIO, ESPSomfyRTS can use that single GDO line for both receiving and transmitting packet 
+The GPIO configuration with a ESP32 S3 Xiao Seeed Studio is as follows;
+- RX Pin = GPIO3
+- TX Pin = GPIO3 <-- same GPIO as RX
+
+pin connection of the ESP32 S3 Xiao Seeed Studio;
+
+<img width="30%" alt="image" src="https://github.com/user-attachments/assets/a6c90227-256f-481b-9778-97537742e0fe" />
+
+| Pin | Description                  | ESP Signal | ESP pin |
+| --- | ---------------------------- | ---------- | ------- |
+| 1   | GND                          | GND        | 13      |
+| 2   | VCC                          | 3v3        | 12      |
+| 3   | GDO0 - This is the Rx/TX Pin | GPIO 03    | 3       |
+| 4   | CSN                          | GPIO 06    | 6       |
+| 5   | SCK                          | GPIO 07    | 9       |
+| 6   | MOSI                         | GPIO 09    | 11      |
+| 7   | MISO                         | GPIO 08    | 10      |
+| 8   | Not connected                |            |         |
+
+Screenshot of my ESPSomfyRTS Radio setting;
+
+<img width="40%" alt="image" src="https://github.com/user-attachments/assets/dd554f1b-836c-40dd-8811-f60dbd8e4370" />
