@@ -73,11 +73,15 @@ I designed a small custom PCB for the controller.
 
 The complete KiCad project is available in the **[KiCad](./KiCad)** folder.
 
-<img width="50%" alt="PCB" src="https://github.com/user-attachments/assets/7d9d914d-bd6e-429b-8e6d-a58af10f896b" />
+<img width="55%" alt="PCB" src="https://github.com/user-attachments/assets/7d9d914d-bd6e-429b-8e6d-a58af10f896b" />
 
-<img width="50%" alt="ESPSomfyRTS PCB layout" src="https://github.com/user-attachments/assets/423ef278-7971-42b5-91cc-b8556553dec7" />
+<img width="45%" alt="ESPSomfyRTS PCB layout" src="https://github.com/user-attachments/assets/423ef278-7971-42b5-91cc-b8556553dec7" />
 
-<img width="50%" alt="PCB" src="https://github.com/user-attachments/assets/06ed107b-ca40-4be6-8069-9680e503d5f3" />
+<img width="28%" alt="image" src="https://github.com/user-attachments/assets/f1e7bbd3-6eb9-4fa9-9347-44b9e27f8aa0" />
+
+<img width="45%" alt="PCB" src="https://github.com/user-attachments/assets/06ed107b-ca40-4be6-8069-9680e503d5f3" />
+
+<img width="45%" alt="image" src="https://github.com/user-attachments/assets/208cb0d0-a4bb-4a62-98b5-d1b56136ce79" />
 
 <img width="50%" alt="PCB" src="https://github.com/user-attachments/assets/2bb88ea2-abb1-45a3-ba3d-a320ddaaafa4" />
 
