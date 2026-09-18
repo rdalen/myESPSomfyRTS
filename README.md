@@ -4,6 +4,9 @@ A DIY Somfy RTS controller for my SunRain Awning/Shade, based on the open-source
 
 The controller uses an ESP32 together with a CC1101 433 MHz RF transceiver and integrates with my Home Assistant and Node-RED setup.
 
+<img width="80%" alt="image" src="https://github.com/user-attachments/assets/b4402055-987b-4c53-8ccf-51ab9d388ed5" />
+<p align="center"><i>Architecture diagram</i></p>
+
 ## How It Works
 
 - **Hardware:** ESP32 microcontroller paired with a CC1101 radio transceiver module.
@@ -11,11 +14,6 @@ The controller uses an ESP32 together with a CC1101 433 MHz RF transceiver and i
 - **Local Operation:** ESPSomfyRTS provides a built-in web interface for controlling the shade directly from a phone or computer.
 - **Smart Home Integration:** The controller integrates with Home Assistant and Node-RED for automation and monitoring.
 - **Position Tracking:** Tracks the shade position independently of the physical Somfy remote.
-
-## Architecture diagram
-
-<img width="1528" height="1014" alt="image" src="https://github.com/user-attachments/assets/b4402055-987b-4c53-8ccf-51ab9d388ed5" />
-
 
 For the firmware, general wiring information and ESPSomfyRTS documentation, see the official [ESPSomfyRTS project](https://github.com/rstrouse/ESPSomfy-RTS).
 
@@ -105,9 +103,9 @@ See also my [Boxify Instructable](https://www.instructables.com/-Boxify-a-Parame
 
 The enclosure was then 3D printed.
 
-<img width="50%" alt="3D printed enclosure" src="https://github.com/user-attachments/assets/83b7fad3-78b1-4a7a-a076-bfe6fb64d51a" />
+<img width="60%" alt="3D printed enclosure" src="https://github.com/user-attachments/assets/83b7fad3-78b1-4a7a-a076-bfe6fb64d51a" />
 
-<img width="30%" alt="Enclosure" src="https://github.com/user-attachments/assets/b7a6c785-e766-40a5-a1b2-e2797452935d" />
+<img width="25%" alt="Enclosure" src="https://github.com/user-attachments/assets/b7a6c785-e766-40a5-a1b2-e2797452935d" />
 
 ---
 
