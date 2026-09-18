@@ -12,6 +12,11 @@ The controller uses an ESP32 together with a CC1101 433 MHz RF transceiver and i
 - **Smart Home Integration:** The controller integrates with Home Assistant and Node-RED for automation and monitoring.
 - **Position Tracking:** Tracks the shade position independently of the physical Somfy remote.
 
+## Architecture diagram
+
+<img width="1528" height="1014" alt="image" src="https://github.com/user-attachments/assets/b4402055-987b-4c53-8ccf-51ab9d388ed5" />
+
+
 For the firmware, general wiring information and ESPSomfyRTS documentation, see the official [ESPSomfyRTS project](https://github.com/rstrouse/ESPSomfy-RTS).
 
 An instruction video is available on [YouTube](https://www.youtube.com/watch?v=1acVJ0xWJgs).
@@ -126,7 +131,5 @@ The dashboard allows me to:
 
 <img width="50%" alt="Node-RED dashboard" src="https://github.com/user-attachments/assets/02ed844e-f5a5-471e-83d8-f6b92894fac3" />
 
-## Architecture diagram
 
-<img width="1528" height="1014" alt="image" src="https://github.com/user-attachments/assets/b4402055-987b-4c53-8ccf-51ab9d388ed5" />
 
