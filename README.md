@@ -113,7 +113,9 @@ The enclosure was then 3D printed.
 
 The Somfy motor does not provide a motor-running feedback signal.
 
-I therefore derive the motor-running state from a HomeWizard energy plug. The motor uses approximately 200 W while running, making it possible to detect whether the motor is active.
+I therefore derive the motor-running state from a HomeWizard Energy Socket. The motor uses approximately 200 W while running, making it possible to detect whether the motor is active.
+
+<img width="15%" alt="image" src="https://github.com/user-attachments/assets/e53c16a8-01d5-43fd-9a9b-3012868d85db" />
 
 For controlling and monitoring the shade I created a Node-RED dashboard.
 
