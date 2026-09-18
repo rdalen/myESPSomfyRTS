@@ -88,7 +88,7 @@ The complete KiCad project is available in the **[KiCad](./KiCad)** folder.
 
 <img width="50%" alt="PCB" src="https://github.com/user-attachments/assets/2bb88ea2-abb1-45a3-ba3d-a320ddaaafa4" />
 
-Before ordering, I panelized the PCB design so I would have enough PCBs to experiment with, sell, or give away ;-)
+Before ordering, I panelized the PCB design so I have several boards available for experimenting with and sharing.
 
 <img width="30%" alt="image" src="https://github.com/user-attachments/assets/62ccf98f-2daa-4fc9-895d-60d2b5e694f9" />
 
