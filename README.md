@@ -105,7 +105,7 @@ The enclosure was then 3D printed.
 
 The STL files are available in the **[Enclosure](./Enclosure)** folder of this repository, so you can print your own enclosure without having to generate the models yourself.
 
-The folder contains the STL files for the box base, lid, adapter plate, and composite text labels.
+The folder contains the STL files for the box base, lid, adapter plate, and text labels.
 
 <img width="60%" alt="3D printed enclosure" src="https://github.com/user-attachments/assets/83b7fad3-78b1-4a7a-a076-bfe6fb64d51a" />
 
